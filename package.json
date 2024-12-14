@@ -1,0 +1,41 @@
+{
+  "name": "nestjs-oauth-server",
+  "version": "1.0.0",
+  "description": "A NestJS-based OAuth server with Google and GitHub authentication",
+  "main": "dist/main.js",
+  "scripts": {
+    "start": "node dist/main",
+    "start:dev": "nest start --watch",
+    "build": "nest build"
+  },
+  "dependencies": {
+    "@nestjs/common": "^10.4.15",
+    "@nestjs/config": "^3.3.0",
+    "@nestjs/core": "^10.4.15",
+    "@nestjs/jwt": "^10.2.0",
+    "@nestjs/passport": "^10.0.3",
+    "@nestjs/platform-express": "^10.4.15",
+    "@nestjs/sequelize": "^10.0.1",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
+    "node-fetch": "^2.7.0",
+    "passport": "^0.7.0",
+    "passport-github": "^1.1.0",
+    "passport-google-oauth20": "^2.0.0",
+    "passport-jwt": "^4.0.1",
+    "pg": "^8.13.1",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.37.5",
+    "sequelize-typescript": "^2.1.6"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^10.2.6",
+    "@nestjs/schematics": "^10.1.3",
+    "@types/node": "^20.7.0",
+    "@types/passport-github": "^1.1.0",
+    "@types/passport-google-oauth20": "^2.0.6",
+    "@types/passport-jwt": "^3.0.7",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.3.0"
+  }
+}
