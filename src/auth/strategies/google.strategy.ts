@@ -27,32 +27,35 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       return done(new Error('Email is missing in Google profile'), null);
     }
   
-    // Find or create the user in the database
     const { user, isNew } = await this.authService.findOrCreateUser(id, {
       name: displayName,
       email: emails[0]?.value,
     });
   
-    console.log('User Retrieved/Created:', { user, isNew });
-    console.log('User DataValues:', user.dataValues);
-  
-     const token = await this.authService.createJwt({ 
-      oauthId: id,  
-      userId: user.userId, 
+    console.log('User Retrieved/Created:', { 
+      user: user.dataValues,  // Log the dataValues explicitly
       isNew 
     });
   
-    console.log('Generated Token Payload:', { 
-      oauthId: id, 
-      userId: user.userId, 
-      isNew 
+    // Explicitly extract userId from dataValues
+    const userId = user.dataValues.userId;
+  
+    const token = await this.authService.createJwt({
+      oauthId: id,
+      userId: userId, // Use the explicit userId from dataValues
+      isNew: !userId // Set isNew based on userId existence
     });
   
+    console.log('Generated Token Payload:', {
+      oauthId: id,
+      userId: userId,
+      isNew: !userId
+    });
     console.log('Generated Token:', token);
   
-     done(null, { 
-      token, 
-      oauthId: id,  
-      isNew 
+    done(null, {
+      token,
+      oauthId: id,
+      isNew: !userId
     });
-  }}
+  } }
