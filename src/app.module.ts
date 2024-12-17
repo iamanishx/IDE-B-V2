@@ -11,7 +11,7 @@ import { User } from './models/user.model';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true, // Make environment variables available globally
+      isGlobal: true, 
     }),
     SequelizeModule.forRoot({
       dialect: 'postgres',
@@ -22,9 +22,9 @@ import { User } from './models/user.model';
       database: process.env.DB_NAME ||'nest_db',
       models: [User],
       autoLoadModels: true,
-      synchronize: true, // Set to false in production
+      synchronize: true,  
     }),
-    AuthModule, // Import the authentication module
+    AuthModule,  
   ],
 })
 export class AppModule {}

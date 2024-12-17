@@ -11,16 +11,24 @@ export class GitHubStrategy extends PassportStrategy(Strategy, 'github') {
       clientID: process.env.GITHUB_CLIENT_ID || 'your-github-client-id',
       clientSecret: process.env.GITHUB_CLIENT_SECRET || 'your-github-client-secret',
       callbackURL: '/auth/github/callback',
-      scope: ['user:email'], // Requesting access to user's email
+      scope: ['user:email'], // Requesting user's email
     });
   }
 
   async validate(accessToken: string, refreshToken: string, profile: any, done: Function) {
     try {
       const { id, displayName, emails } = profile;
+
+      console.log('GitHub Profile:', { id, displayName, emails });
+
+      // Validate that OAuth ID exists
+      if (!id) {
+        return done(new Error('Missing oauthId in GitHub profile'), null);
+      }
+
       let email = emails?.[0]?.value;
 
-      // Fetch additional emails if not available in the profile
+      // Fetch additional emails if the primary email is unavailable
       if (!email) {
         const response = await fetch('https://api.github.com/user/emails', {
           headers: { Authorization: `Bearer ${accessToken}` },
@@ -38,32 +46,40 @@ export class GitHubStrategy extends PassportStrategy(Strategy, 'github') {
         }
       }
 
-      console.log('GitHub Profile:', { id, displayName, email });
-
-      // Ensure that GitHub's `id` is properly handled as `oauthId`
-      if (!id) {
-        return done(new Error('Missing oauthId in GitHub profile'), null);
-      }
-
-      // Use AuthService to find or create a user
+      // Use AuthService to find or create the user
       const { user, isNew } = await this.authService.findOrCreateUser(id, {
         name: displayName || 'GitHub User', // Fallback if displayName is missing
         email,
       });
 
-      console.log('User Retrieved/Created:', { user, isNew });
-
-      // Create a JWT token for the authenticated user
-      const token = await this.authService.createJwt({
-        oauthId: id,
-        userId: user.userId,
+      console.log('User Retrieved/Created:', {
+        user: user.dataValues, // Explicitly log the dataValues
         isNew,
       });
 
+      // Extract the userId explicitly
+      const userId = user.dataValues.userId;
+
+      // Generate a JWT token for the authenticated user
+      const token = await this.authService.createJwt({
+        oauthId: id,
+        userId: userId, // Explicit userId
+        isNew: !userId, // Determine isNew based on userId existence
+      });
+
+      console.log('Generated Token Payload:', {
+        oauthId: id,
+        userId: userId,
+        isNew: !userId,
+      });
       console.log('Generated Token:', token);
 
-      // Return the user and token to the Passport framework
-      done(null, { token, oauthId: id, isNew });
+      // Return the user and token to Passport
+      done(null, {
+        token,
+        oauthId: id,
+        isNew: !userId,
+      });
     } catch (error) {
       console.error('Error in GitHub Strategy Validation:', error.message);
       done(error, null);
