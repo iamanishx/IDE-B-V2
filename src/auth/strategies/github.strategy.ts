@@ -11,7 +11,7 @@ export class GitHubStrategy extends PassportStrategy(Strategy, 'github') {
       clientID: process.env.GITHUB_CLIENT_ID || 'your-github-client-id',
       clientSecret: process.env.GITHUB_CLIENT_SECRET || 'your-github-client-secret',
       callbackURL: '/auth/github/callback',
-      scope: ['user:email'], // Requesting user's email
+      scope: ['user:email'],  
     });
   }
 
@@ -21,8 +21,7 @@ export class GitHubStrategy extends PassportStrategy(Strategy, 'github') {
 
       console.log('GitHub Profile:', { id, displayName, emails });
 
-      // Validate that OAuth ID exists
-      if (!id) {
+       if (!id) {
         return done(new Error('Missing oauthId in GitHub profile'), null);
       }
 
@@ -63,8 +62,8 @@ export class GitHubStrategy extends PassportStrategy(Strategy, 'github') {
       // Generate a JWT token for the authenticated user
       const token = await this.authService.createJwt({
         oauthId: id,
-        userId: userId, // Explicit userId
-        isNew: !userId, // Determine isNew based on userId existence
+        userId: userId, 
+        isNew: !userId,  
       });
 
       console.log('Generated Token Payload:', {

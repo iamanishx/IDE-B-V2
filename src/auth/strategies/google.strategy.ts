@@ -33,12 +33,11 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     });
   
     console.log('User Retrieved/Created:', { 
-      user: user.dataValues,  // Log the dataValues explicitly
+      user: user.dataValues,   
       isNew 
     });
   
-    // Explicitly extract userId from dataValues
-    const userId = user.dataValues.userId;
+     const userId = user.dataValues.userId;
   
     const token = await this.authService.createJwt({
       oauthId: id,
