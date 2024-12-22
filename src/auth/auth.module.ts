@@ -8,7 +8,7 @@ import { AuthController } from './auth.controller';
 import { GoogleStrategy } from './strategies/google.strategy';
 import { GitHubStrategy } from './strategies/github.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
-import { User } from '../models/user.model';
+import { User } from './schema/user.entity';
 
 @Module({
   imports: [

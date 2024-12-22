@@ -1,8 +1,7 @@
-// auth.service.ts
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/sequelize';
-import { User } from '../models/user.model';
+import { User } from './schema/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -19,8 +18,7 @@ export class AuthService {
     return { user, isNew: created };
   }
 
- // In auth.service.ts
-async createJwt(payload: { oauthId: string, userId?: string, isNew?: boolean }) {
+ async createJwt(payload: { oauthId: string, userId?: string, isNew?: boolean }) {
   return this.jwtService.sign(payload);
 }
 
