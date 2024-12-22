@@ -5,8 +5,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { AuthModule } from './auth/auth.module';
-import { User } from './models/user.model';
- 
+import { User } from './auth/schema/user.entity';
+import { ProjectsModule } from './projects/projects.module';
 
 @Module({
   imports: [
@@ -25,7 +25,8 @@ import { User } from './models/user.model';
       synchronize: true,  
       
     }),
-    AuthModule,  
+    AuthModule,
+    ProjectsModule,  
   ],
 })
 export class AppModule {}
