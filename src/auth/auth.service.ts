@@ -21,5 +21,7 @@ export class AuthService {
  async createJwt(payload: { oauthId: string, userId?: string, isNew?: boolean }) {
   return this.jwtService.sign(payload);
 }
-
+async findUserById(userId: string): Promise<User | null> {
+  return await this.userModel.findOne({ where: { id: userId } });
+}
 }
