@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Req, Res, Body, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Req, Res, Body, UseGuards, UnauthorizedException } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { User } from './schema/user.entity';
@@ -133,11 +133,21 @@ async updateUserId(@Req() req, @Body('userId') newUserId: string, @Res() res) {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 }
-
-
-  @Get('home')
-  @UseGuards(AuthGuard('jwt'))
-  async home(@Req() req) {
-    return { message: 'Welcome to your home page!', user: req.user };
+@Get('user')
+@UseGuards(AuthGuard('jwt'))
+async getCurrentUser(@Req() req) {
+  try {
+    if (!req.user) {
+      throw new UnauthorizedException('User not authenticated');
+    } console.log('User:', req.user.userId);
+    
+    return {
+      userId: req.user.userId,
+      oauthId: req.user.oauthId,
+      isAuthenticated: true
+    };
+  } catch (error) {
+    throw new UnauthorizedException('Failed to get user details');
   }
+}
 }
